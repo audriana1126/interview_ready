@@ -1,4 +1,4 @@
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
@@ -8,29 +8,40 @@ import Register from "./pages/Register";
 
 
 export default function App() {
-  const { user } = useAuth(); 
+  const { user, logout } = useAuth(); 
 
   return (
     <div style={{ padding: 24 }}>
       <h1>Interview Ready</h1>
 
-      <nav style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+      <nav style={{ display: "flex", gap: 12, marginBottom: 16, alignItems: "center" }}>
         <Link to="/">Home</Link>
-        <Link to="/login">Login</Link>
-        <Link to="/profile">Profile</Link>
+
+        {!user ? (
+          <>
+            <Link to="/login">Login</Link>
+            <Link to ="/register">Register</Link>
+          </>
+        ) : (
+          <>
+          <Link to="/profile">Profile</Link>
+          <button onClick={logout} style={{ marginLeft: 8 }}>Logout</button>
+          </>
+        )}
+        
+        
 
         <div style={{ marginLeft: "auto" }}>
-          {user ? `✅ ${user.name}` : "👤 Guest"}
+          {user ? `${user.name}` : "Guest"}
         </div>
       </nav>
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={!user ? <Login /> : <Navigate to="/profile" replace />} />
+        <Route path="/register" element={!user ? <Register /> : <Navigate to="/profile" replace />} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/register" element={<Register />} />
       </Routes>
-
     </div>
   );
 }
