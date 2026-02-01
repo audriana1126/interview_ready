@@ -20,7 +20,7 @@ export default function Profile() {
       <p>
         Logged in as <b>{user.name}</b> ({user.email})
       </p>
-      <button onClick={logout}>Log Out</button>
+      <Link to="/questions">Interview Questions</Link>
     </div>
   );
 }

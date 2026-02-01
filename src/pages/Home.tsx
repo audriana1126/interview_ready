@@ -15,6 +15,7 @@ export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
 
   useEffect(() => {
     async function load() {
@@ -46,6 +47,7 @@ export default function Home() {
                 <div className="landing__actions">
                     <Link className="landing__action" to="/login">Login</Link>
                     <Link className="landing__action" to="/register">Register</Link>
+                    
                 </div>
             </section>
             <section className="landing__right">

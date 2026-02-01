@@ -5,6 +5,7 @@ import Profile from "./pages/Profile";
 import { useAuth } from "./components/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Register from "./pages/Register";
+import Questions from "./pages/Questions";
 
 
 export default function App() {
@@ -41,6 +42,7 @@ export default function App() {
         <Route path="/login" element={!user ? <Login /> : <Navigate to="/profile" replace />} />
         <Route path="/register" element={!user ? <Register /> : <Navigate to="/profile" replace />} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/questions" element={<ProtectedRoute><Questions /></ProtectedRoute>} />
       </Routes>
     </div>
   );
