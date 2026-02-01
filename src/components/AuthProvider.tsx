@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { User, LoginInput } from "../services/auth";
-import { login as loginService } from "../services/auth";
+import { login as loginService, getMe } from "../services/auth";
+
 
 type AuthContextValue = {
   user: User | null;
@@ -13,8 +14,6 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-const AUTH_USER_KEY = "ir_auth_user";
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,17 +21,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isHydrating, setIsHydrating] = useState(true);
 
   useEffect(() => {
-    const raw = localStorage.getItem(AUTH_USER_KEY);
-    if (raw) {
-        try {
-        const saved = JSON.parse(raw) as User;
-        setUser(saved);
-        } catch {
-        localStorage.removeItem(AUTH_USER_KEY);
+    async function hydrate() {
+      try {
+        const u = await getMe();
+        setUser(u);
+      } finally {
+        setIsHydrating(false);
+      }
     }
-  }
-
-  setIsHydrating(false);
+    hydrate();
   }, []);
 
   async function login(input: LoginInput) {
@@ -41,8 +38,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const u = await loginService(input);
       setUser(u);
-      // ✅ SAVE USER
-      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(u));
     } catch (e) {
       setError(e instanceof Error ? e.message : "Login failed.");
       setUser(null);
@@ -54,8 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   function logout() {
     setUser(null);
-    // ✅ CLEAR USER
-    localStorage.removeItem(AUTH_USER_KEY);
+    localStorage.removeItem("token");
   }
 
   const value = useMemo(
