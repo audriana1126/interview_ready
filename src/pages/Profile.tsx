@@ -20,7 +20,7 @@ export default function Profile() {
       <p>
         Logged in as <b>{user.name}</b> ({user.email})
       </p>
-      <Link to="/questions">Interview Questions</Link>
+      <Link to="/sessions">Mock Interviews</Link>
     </div>
   );
 }

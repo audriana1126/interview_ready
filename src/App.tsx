@@ -6,10 +6,13 @@ import { useAuth } from "./components/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Register from "./pages/Register";
 import Questions from "./pages/Questions";
+import Sessions from "./pages/Sessions";
+
 
 
 export default function App() {
   const { user, logout } = useAuth(); 
+  
 
   return (
     <div style={{ padding: 24 }}>
@@ -32,9 +35,7 @@ export default function App() {
         
         
 
-        <div style={{ marginLeft: "auto" }}>
-          {user ? `${user.name}` : "Guest"}
-        </div>
+        <div style={{ marginLeft: "auto" }}>{user ? `${user.name}` : "Guest"}</div>
       </nav>
 
       <Routes>
@@ -42,7 +43,9 @@ export default function App() {
         <Route path="/login" element={!user ? <Login /> : <Navigate to="/profile" replace />} />
         <Route path="/register" element={!user ? <Register /> : <Navigate to="/profile" replace />} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/questions" element={<ProtectedRoute><Questions /></ProtectedRoute>} />
+        <Route path="/sessions" element={<ProtectedRoute><Sessions /></ProtectedRoute>} />
+        <Route path="/sessions/:id" element={<ProtectedRoute><Questions /></ProtectedRoute>} />
+
       </Routes>
     </div>
   );
