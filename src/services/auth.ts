@@ -1,3 +1,5 @@
+const API_URL = "http://localhost:4000";
+
 export type User = {
     id: string;
     name: string;
@@ -29,31 +31,30 @@ export async function register(input: RegisterInput): Promise<User> {
   }
 
   localStorage.setItem("token", data.token);
+  localStorage.setItem("user", JSON.stringify(data.user));
+
   return data.user;
 }
 
-const API_URL = "http://localhost:4000";
 
 export async function login(input: LoginInput): Promise<User> {
     const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(input),
     });
 
-    if (!res.ok) {
-        throw new Error("Invalid email or password.");
-    }
-
     const data = await res.json();
 
-    //save JWT token
-    localStorage.setItem("token", data.token);
+    if (!res.ok) {
+        throw new Error(data.message || "Login failed");
+    }
 
-    return data.user;
-}
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        return data.user;
+    }
 
 export async function getMe(): Promise<User | null> {
     const token = localStorage.getItem("token");

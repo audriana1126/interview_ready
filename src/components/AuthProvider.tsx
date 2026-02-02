@@ -50,6 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   function logout() {
     setUser(null);
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
   }
 
   const value = useMemo(
